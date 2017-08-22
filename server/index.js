@@ -7,11 +7,22 @@ import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import webpackConfig from '../webpack.config.dev';
 
+// Import webpackHotMiddleware for auto-refreshing
+import webpackHotMiddleware from 'webpack-hot-middleware';
+
 // Initialize out app as express
 let app = express();
 
 // Use the Middleware package that takes a compiler
-app.use(webpackMiddleware(webpack(webpackConfig)));
+const compiler = webpack(webpackConfig);
+app.use(webpackMiddleware(compiler, {
+	hot: true,
+	publicPath: webpackConfig.output.publicPath,
+	noInfo: true
+}));
+//  Use HotMiddleware
+app.use(webpackHotMiddleware(compiler));
+
 
 // Get all routes with an error function
 app.get('/*', (req, res)=>{
