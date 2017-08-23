@@ -23,13 +23,22 @@ class SignupForm extends React.Component{
 	onChange(e){
 		this.setState({ [e.target.name]: e.target.value});
 	}
+	isValid(){
+		const {errors, isValid} = validateInput(this.state);
+		if(!isValid){
+			this.setState({errors});
+		}
+		return isValid;
+	}
 	onSubmit(e){
-		this.setState({errors:{}, isLoading:true});
 		e.preventDefault();
-		this.props.userSignupRequest(this.state).then(
-			() => {},
-			(err) => this.setState({errors: err.response.data, isLoading: false})
-		);
+		if(this.isValid()){
+			this.setState({errors:{}, isLoading:true});
+			this.props.userSignupRequest(this.state).then(
+				() => {},
+				(err) => this.setState({errors: err.response.data, isLoading: false})
+			);
+		}
 	}
 
 	render(){
